@@ -1,90 +1,117 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+  Keyboard,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Alert
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function App() {
+
+  const [name, setName] = useState('');
+
+  function closeKeyboard() {
+    Keyboard.dismiss();
+  }
+  function submitForm(){
+    return Alert.alert('Formulario Enviado');
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+    <TouchableWithoutFeedback onPress={closeKeyboard}>
+    <KeyboardAvoidingView //Makes the keyboard not cover the input fields.
+      style={{ flex: 1 }}
+      //If else command to check the platform and apply the best behavior for the keyboard.
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}> 
+      <ScrollView contentContainerStyle={styles.scrollView} bounces={false} >
+        
+          <SafeAreaView style={styles.container}>
 
-      <Text style={styles.profile}>Perfil</Text>
+            <StatusBar style="light" />
+            <Text style={styles.profile}>Perfil</Text>
 
-      <View style={styles.main}>
-        {/* Gradiente como borda */}
-        <LinearGradient
-          colors={['#d213cc', '#cf7521', '#250fd2']}
-          locations={[0, 0.5, 1]}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.gradientBorder}
-        >
-          <Image
-            source={{ uri: 'https://avatars.githubusercontent.com/u/179247991?v=4' }}
-            style={styles.img}
-          />
-        </LinearGradient>
+            <View style={styles.main}>
+              <Image
+                source={{ uri: 'https://avatars.githubusercontent.com/u/179247991?v=4' }}
+                style={styles.img}
+              />
 
-        <TouchableOpacity>
-          <Text style={styles.uploadText}>Alterar foto</Text>
-        </TouchableOpacity>
+              <TouchableOpacity>
+                <Text style={styles.uploadText}>Alterar foto</Text>
+              </TouchableOpacity>
 
-        <View style={styles.info}>
-          <Text style={styles.username}>Matheus Pazetto</Text>
-          <Text style={styles.role}>Desenvolvedor</Text>
-        </View>
+              <View style={styles.info}>
+                <Text style={styles.username}>Matheus Pazetto</Text>
+                <Text style={styles.role}>Desenvolvedor</Text>
+              </View>
 
-        <View style={styles.info}>
-          <TextInput
-            style={styles.input}
-            placeholder="Alterar nome"
-            placeholderTextColor="#747373"
-            selectionColor="#b42d9e"
-          />
-          <TextInput
-            style={[styles.input, styles.inputDisabled]}
-            placeholder="Alterar email"
-            placeholderTextColor="#333333"
-            selectionColor="#b42d9e"
-            defaultValue='mpazetto04@gmail.com'
-            editable={false}
-            color='#414141'
-            backgroundColor='#1d1d1d'
-          />
-        </View>
-        <Text style={styles.label}>Alterar senha</Text>
+              <View style={styles.info}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Alterar nome"
+                  placeholderTextColor="#747373"
+                  selectionColor="#317c44"
+                  defaultValue={name}
+                  onChangeText={()=> setName()}
+                />
+                <TextInput
+                  style={[styles.input, styles.inputDisabled]}
+                  placeholder="Alterar email"
+                  placeholderTextColor="#333333"
+                  selectionColor="#317c44"
+                  defaultValue="mpazetto04@gmail.com"
+                  editable={false}
+                />
+              </View>
 
-        <View style={styles.info}>
-          <TextInput
-            style={styles.input}
-            placeholder="Senha atual"
-            placeholderTextColor="#747373"
-            selectionColor="#b42d9e"
-            secureTextEntry={true}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Nova senha"
-            placeholderTextColor="#747373"
-            selectionColor="#b42d9e"
-            secureTextEntry={true}
-          />
+              <Text style={styles.label}>Alterar senha</Text>
 
-        <TouchableOpacity
-            style={styles.btnSubmit}
-            title="Enviar"
-            onPress={() => {}}
-            color="#fff"
-          >
-            <Text style={styles.btnSubmitText}>Atualizar</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
+              <View style={styles.info}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Senha atual"
+                  placeholderTextColor="#747373"
+                  selectionColor="#317c44"
+                  secureTextEntry={true}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Nova senha"
+                  placeholderTextColor="#747373"
+                  selectionColor="#317c44"
+                  secureTextEntry={true}
+                />
+                <TouchableOpacity
+                  style={styles.btnSubmit}
+                  onPress={submitForm}
+                >
+                  <Text style={styles.btnSubmitText}>Atualizar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </SafeAreaView>
+       
+      </ScrollView>
+    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
+
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: '#202024',
@@ -99,7 +126,6 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#292929',
-    placeholderTextColor: '#747373',
     width: '90%',
     height: 56,
     borderRadius: 8,
@@ -112,31 +138,26 @@ const styles = StyleSheet.create({
     color: '#414141',
   },
   label: {
-  alignSelf: 'flex-start',
-  marginLeft: '6%',
-  fontSize: 16,
-  color: '#fff',
-  marginTop: 16,
-  fontWeight: 'bold',
-},
+    alignSelf: 'flex-start',
+    marginLeft: '6%',
+    fontSize: 16,
+    color: '#fff',
+    marginTop: 16,
+    fontWeight: 'bold',
+  },
   main: {
     flex: 1,
     backgroundColor: '#121214',
     alignItems: 'center',
   },
-  // Gradiente que serve de borda
-  gradientBorder: {
-    width: 184,          // 180 + (2 * 2)  → 2px de cada lado
-    height: 184,
-    borderRadius: 95,    // metade de 184
-    padding: 3,          // espessura da borda
-    marginTop: 32,
-    marginBottom: 16,
-  },
   img: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 95,    // metade de 184
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    borderWidth: 3,
+    borderColor: '#317c44', // cor da borda (pode mudar)
+    marginTop: 32,
+    marginBottom: 8,
   },
   info: {
     alignItems: 'center',
@@ -151,6 +172,7 @@ const styles = StyleSheet.create({
   role: {
     fontSize: 16,
     color: '#fff',
+    marginBottom: 8,
   },
   uploadText: {
     fontSize: 16,
@@ -162,15 +184,15 @@ const styles = StyleSheet.create({
   btnSubmit: {
     width: '90%',
     height: 56,
-    backgroundColor: '#b42d9e',
+    backgroundColor: '#317c44',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 16,
   },
   btnSubmitText: {
-  color: '#fff',
-  fontSize: 16,
-  fontWeight: 'bold',
-},
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });

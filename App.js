@@ -15,16 +15,17 @@ import {
   Alert
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Button from './src/components/Button';
 
 export default function App() {
 
   const [name, setName] = useState('');
-
   function closeKeyboard() {
     Keyboard.dismiss();
   }
   function submitForm(){
-    return Alert.alert('Formulario Enviado');
+    setName(name);
+    return Alert.alert(`Nome alterado para: ${name}!`);
   }
 
   return (
@@ -57,12 +58,13 @@ export default function App() {
 
               <View style={styles.info}>
                 <TextInput
+                id='nameInput'
                   style={styles.input}
                   placeholder="Alterar nome"
                   placeholderTextColor="#747373"
                   selectionColor="#317c44"
                   defaultValue={name}
-                  onChangeText={()=> setName()}
+                  onChangeText={(text)=> setName(text)}
                 />
                 <TextInput
                   style={[styles.input, styles.inputDisabled]}
@@ -91,12 +93,11 @@ export default function App() {
                   selectionColor="#317c44"
                   secureTextEntry={true}
                 />
-                <TouchableOpacity
-                  style={styles.btnSubmit}
-                  onPress={submitForm}
-                >
-                  <Text style={styles.btnSubmitText}>Atualizar</Text>
-                </TouchableOpacity>
+                <Button 
+                title="Atualizar" //Defines the title on the button.
+                onPress={submitForm} //Activates the function that updates the name and trigger the allert.
+                disabled={name.length === 0} //Disable the button if the name input is empty.
+                />
               </View>
             </View>
           </SafeAreaView>
@@ -181,15 +182,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontWeight: 'bold',
   },
-  btnSubmit: {
-    width: '90%',
-    height: 56,
-    backgroundColor: '#317c44',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 16,
-  },
+  
   btnSubmitText: {
     color: '#fff',
     fontSize: 16,
